@@ -85,13 +85,13 @@ def timelapse_mock_data(request) -> Tuple[zarr.Array, zarr.Array, zarr.Array]:
     shape = (length,) + blobs.shape
 
     foreground = zarr.empty(
-        shape, store=zarr.MemoryStore(), chunks=(1, *blobs.shape), dtype=blobs.dtype
+        shape, store=zarr.storage.MemoryStore(), chunks=(1, *blobs.shape), dtype=blobs.dtype
     )
     edge = zarr.empty(
-        shape, store=zarr.MemoryStore(), chunks=(1, *blobs.shape), dtype=contours.dtype
+        shape, store=zarr.storage.MemoryStore(), chunks=(1, *blobs.shape), dtype=contours.dtype
     )
     segmentation = zarr.empty(
-        shape, store=zarr.MemoryStore(), chunks=(1, *blobs.shape), dtype=labels.dtype
+        shape, store=zarr.storage.MemoryStore(), chunks=(1, *blobs.shape), dtype=labels.dtype
     )
 
     for t in range(length):

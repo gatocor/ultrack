@@ -13,7 +13,7 @@ from numpy.typing import ArrayLike
 from skimage.measure import regionprops_table
 from sqlalchemy.orm import Session
 from tqdm import tqdm
-from zarr.storage import Store
+from zarr.abc.store import Store
 
 from ultrack.config import MainConfig
 from ultrack.core.database import NodeDB
@@ -579,7 +579,7 @@ def timelapse_flow(
     images : ArrayLike
         Timelapse images shape as (T, ...).
     store_or_path : Union[None, Store, Path, str], optional
-        Zarr storage or output path, if not provided zarr.TempStore is used.
+        Zarr storage or output path, if not provided zarr.storage.LocalStore(tempfile.TemporaryDirectory().name) is used.
     chunks : Optional[Tuple[int]], optional
         Chunk size, if not provided it chunks time with 1 and the spatial dimensions as big as possible.
     channel_axis : Optional[int], optional
@@ -627,7 +627,7 @@ def timelapse_flow(
             dtype=dtype,
             store_or_path=store_or_path,
             chunks=chunks,
-            default_store_type=zarr.TempStore,
+            default_store_type=zarr.storage.LocalStore(tempfile.TemporaryDirectory().name),
         )
 
     target = _to_tensor(images[0], channel_axis, device)

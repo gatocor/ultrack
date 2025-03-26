@@ -8,7 +8,7 @@ import scipy.ndimage as ndi
 import zarr
 from numpy.typing import ArrayLike
 from tqdm import tqdm
-from zarr.storage import Store
+from zarr.abc.store import Store
 
 from ultrack.utils.array import create_zarr
 

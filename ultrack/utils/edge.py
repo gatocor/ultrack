@@ -5,7 +5,7 @@ from typing import Optional, Sequence, Tuple, Union
 import zarr
 from numpy.typing import ArrayLike
 from tqdm import tqdm
-from zarr.storage import Store
+from zarr.abc.store import Store
 
 from ultrack.utils.array import create_zarr
 from ultrack.utils.cuda import import_module, to_cpu
@@ -74,14 +74,14 @@ def labels_to_contours(
         dtype=bool,
         store_or_path=foreground_store_or_path,
         overwrite=overwrite,
-        default_store_type=zarr.TempStore,
+        default_store_type=zarr.storage.LocalStore(tempfile.TemporaryDirectory().name),
     )
     contours = create_zarr(
         shape=shape,
         dtype=xp.float32,
         store_or_path=contours_store_or_path,
         overwrite=overwrite,
-        default_store_type=zarr.TempStore,
+        default_store_type=zarr.storage.LocalStore(tempfile.TemporaryDirectory().name),
     )
 
     for t in tqdm(range(shape[0]), "Converting labels to contours"):

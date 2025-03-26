@@ -1,6 +1,7 @@
 import logging
 from enum import Enum
 from typing import Dict, Generator, List, Optional, Sequence
+import tempfile
 
 import napari
 import numpy as np
@@ -246,7 +247,7 @@ class UltrackWorkflow:
                 segments = tracks_to_zarr(
                     config,
                     tracks_df,
-                    store_or_path=zarr.TempStore(suffix="segments"),
+                    store_or_path=zarr.storage.LocalStore(tempfile.TemporaryDirectory(),suffix="segments"),
                     overwrite=True,
                 )
 
@@ -354,7 +355,7 @@ class UltrackWorkflow:
                     del flow_kwargs["__enable__"]
                     flow_field = timelapse_flow(
                         image.data,
-                        store_or_path=zarr.TempStore(suffix="flow"),
+                        store_or_path=zarr.storage.LocalStore(tempfile.TemporaryDirectory(),suffix="flow"),
                         **flow_kwargs,
                     )
                     flow_kwargs["__enable__"] = True
@@ -471,8 +472,8 @@ class UltrackWorkflow:
         Tuple[ArrayLike, ArrayLike]
             The detection and contours arrays.
         """
-        store_detection = zarr.TempStore(suffix="detection")
-        store_contours = zarr.TempStore(suffix="contours")
+        store_detection = zarr.storage.LocalStore(tempfile.TemporaryDirectory(),suffix="detection")
+        store_contours = zarr.storage.LocalStore(tempfile.TemporaryDirectory(),suffix="contours")
 
         labels_to_contours(
             labels,
@@ -561,8 +562,8 @@ def _create_temp_detection_and_contours(
     Tuple[ArrayLike, ArrayLike]
         The paths to the temporary detection and contours arrays.
     """
-    detection_store = zarr.TempStore(suffix="detection")
-    contours_store = zarr.TempStore(suffix="contours")
+    detection_store = zarr.storage.LocalStore(tempfile.TemporaryDirectory(),suffix="detection")
+    contours_store = zarr.storage.LocalStore(tempfile.TemporaryDirectory(),suffix="contours")
 
     zarr_detection = create_zarr(
         shape=shape,

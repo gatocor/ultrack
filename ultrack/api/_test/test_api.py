@@ -37,7 +37,7 @@ def _get_ultrack_solution(
     segments = tracks_to_zarr(
         config,
         tracks_df,
-        store_or_path=zarr.MemoryStore(),
+        store_or_path=zarr.storage.MemoryStore(),
         overwrite=True,
     )
 
@@ -271,8 +271,8 @@ def test_from_labels(experiment_instance: Experiment, label_to_edges_kwargs: dic
     # compare the results with the ones obtained from the ultrack module
     detection, edges = labels_to_contours(
         label_data,
-        foreground_store_or_path=zarr.MemoryStore(),
-        contours_store_or_path=zarr.MemoryStore(),
+        foreground_store_or_path=zarr.storage.MemoryStore(),
+        contours_store_or_path=zarr.storage.MemoryStore(),
         **label_to_edges_kwargs,
     )
 

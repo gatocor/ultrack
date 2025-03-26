@@ -4,12 +4,13 @@ import shutil
 import warnings
 from pathlib import Path
 from typing import Any, Callable, Dict, Literal, Optional, Tuple, Type, Union
+import tempfile
 
 import numpy as np
 import zarr
 from numpy.typing import ArrayLike
 from tqdm import tqdm
-from zarr.storage import Store
+from zarr.abc.store import Store
 
 LOG = logging.getLogger(__name__)
 
@@ -166,7 +167,7 @@ def create_zarr(
     dtype: np.dtype,
     store_or_path: Union[Store, Path, str, None] = None,
     overwrite: bool = False,
-    default_store_type: Type[Store] = zarr.TempStore,
+    default_store_type: Type[Store] = zarr.storage.LocalStore(tempfile.TemporaryDirectory().name),
     chunks: Optional[Tuple[int]] = None,
     **kwargs,
 ) -> zarr.Array:
@@ -179,7 +180,7 @@ def create_zarr(
     dtype : np.dtype
         Data type of the array.
     store_or_path : Optional[Union[Path, str]], optional
-        Path to store the array, if None a zarr.MemoryStore is used, by default None
+        Path to store the array, if None a zarr.storage.MemoryStore is used, by default None
     overwrite : bool, optional
         Overwrite existing file, by default False
     chunks : Optional[Tuple[int]], optional

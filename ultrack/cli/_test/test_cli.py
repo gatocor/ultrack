@@ -77,7 +77,7 @@ class TestCommandLine:
 
     def test_add_flow(self, instance_config_path: str) -> None:
         config = load_config(instance_config_path)
-        tmp_store = zarr.TempStore(suffix=".zarr")
+        tmp_store = zarr.storage.LocalStore(tempfile.TemporaryDirectory(),suffix=".zarr")
         zarr.zeros((2,) + tuple(config.data_config.metadata["shape"]), store=tmp_store)
         _run_command(["add_flow", "-cfg", str(instance_config_path), tmp_store.path])
 

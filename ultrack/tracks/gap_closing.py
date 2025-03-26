@@ -5,7 +5,7 @@ import pandas as pd
 from numpy.typing import ArrayLike
 from scipy.optimize import linear_sum_assignment
 from scipy.spatial.distance import cdist
-from zarr.storage import Store
+from zarr.abc.store import Store
 
 from ultrack.utils.constants import NO_PARENT
 from ultrack.utils.segmentation import SegmentationPainter, copy_segments

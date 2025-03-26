@@ -4,7 +4,7 @@ from typing import Optional, Tuple, Union
 import numpy as np
 import pandas as pd
 import zarr
-from zarr.storage import Store
+from zarr.abc.store import Store
 
 from ultrack.config.config import MainConfig
 from ultrack.core.export.utils import export_segmentation_generic
@@ -29,7 +29,7 @@ def tracks_to_zarr(
     tracks_df : pd.DataFrame
         Tracks dataframe, must have `track_id` column and be indexed by node id.
     store_or_path : Union[None, Store, Path, str], optional
-        Zarr storage or output path, if not provided zarr.TempStore is used.
+        Zarr storage or output path, if not provided zarr.storage.LocalStore(tempfile.TemporaryDirectory().name) is used.
     chunks : Optional[Tuple[int]], optional
         Chunk size, if not provided it chunks time with 1 and the spatial dimensions as big as possible.
     overwrite : bool, optional
@@ -44,9 +44,9 @@ def tracks_to_zarr(
     shape = config.data_config.metadata["shape"]
     dtype = np.int32
 
-    if isinstance(store_or_path, zarr.MemoryStore) and config.data_config.n_workers > 1:
+    if isinstance(store_or_path, zarr.storage.MemoryStore) and config.data_config.n_workers > 1:
         raise ValueError(
-            "zarr.MemoryStore and multiple workers are not allowed. "
+            "zarr.storage.MemoryStore and multiple workers are not allowed. "
             f"Found {config.data_config.n_workers} workers in `data_config`."
         )
 
@@ -62,7 +62,7 @@ def tracks_to_zarr(
             dtype=dtype,
             store_or_path=store_or_path,
             chunks=chunks,
-            default_store_type=zarr.TempStore,
+            default_store_type=zarr.storage.LocalStore(tempfile.TemporaryDirectory().name),
             overwrite=overwrite,
         )
 
